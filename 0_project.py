@@ -49,13 +49,14 @@ for ikind, itarget in targets.items():
         print(f"\t{iparticipant} - {ikind}")
         if "assigned" not in conf.get_conf_field(iparticipant, [ikind]):
             if change_marker_names:
+                #todo: add a dynamic assignment tool
                 fields = FieldsAssignment(
                     directory=conf.get_conf_field(iparticipant, field=[ikind, "data"]),
                     targets=itarget,
                     kind=ikind,
                 )
-                fields_conf = {'assigned' : fields.output}
-            else :
-                fields_conf =  {'assigned' : itarget}
+                fields_conf = fields.output
+            else:
+                fields_conf = {ikind: {"targets": itarget, "assigned": itarget}}
             print("\t\tdone")
             conf.add_conf_field({iparticipant: fields_conf})
