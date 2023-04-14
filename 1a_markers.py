@@ -31,24 +31,8 @@ for iparticipant in participants:
             assigned = conf.get_conf_field(
                 participant=iparticipant, field=["markers", "assigned"]
             )
-            if iparticipant == "01Arem":
-                if itrial.stem == "P0_B_03":
-                    print("P0_B_03 skipped for 01Arem")
-                    continue
 
             blacklist = False
-            # try participant's channel assignment
-            # for iassign in assigned:
-            #     # if itrial.stem.startswith('F_') or itrial.stem.startswith('T_') or itrial.stem.startswith('Pos'):
-            #     #     if iparticipant == "01Arem":
-            #     #         iassign = [i if n > 7 else '' for n, i in enumerate(iassign)]
-            #
-            #     # skip some trials
-            #     # if itrial.stem[-1] == '0':
-            #     #     pass
-            #     # else:
-            #     #     blacklist = True
-            #     #     break
 
             nan_idx = [i for i, v in enumerate(assigned) if not v]
             if nan_idx:

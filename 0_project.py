@@ -11,7 +11,7 @@ change_marker_names = False
 # ACTUAL PARTICIPANT TO PROCESS #
 participant_to_do = -1
 
-project = Project(path = PROJECT_PATH)
+project = Project(path=PROJECT_PATH)
 
 if Initialize:
     project.create_project()
