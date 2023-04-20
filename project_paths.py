@@ -3,6 +3,10 @@ from pathlib import Path
 PROJECT_PATH = Path("D:/Knee_Flexion_auditory_tactile_feedback/Analysis/results")
 RAW_PATH = Path("D:/Knee_Flexion_auditory_tactile_feedback/Raw_data/Young")
 CONF_TEMPLATE = Path("D:/Knee_Flexion_auditory_tactile_feedback/Raw_data/_conf.csv")
+TEMPLATES_PATH = PROJECT_PATH / "_templates"
+MODELS_PATH = PROJECT_PATH / "_models"
+
+MASS_FACTOR = 0.493
 
 targets = {
     "markers": [

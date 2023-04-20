@@ -4,7 +4,7 @@
 
 from pathlib import Path
 import numpy as np
-import opensim as osim
+
 
 from pyosim import Conf
 from pyosim import Markers3dOsim
@@ -53,7 +53,7 @@ for iparticipant in participants:
                     print(f"\t{itrial.stem}")
 
                 # check if dimensions are ok
-                if not markers.shape[1] == len(assigned):
+                if not markers.data.shape[1] == len(assigned):
                     raise ValueError("Wrong dimensions")
                 # break
             except IndexError as e:
@@ -67,38 +67,40 @@ for iparticipant in participants:
                 trc_filename = (
                     f"{PROJECT_PATH / iparticipant / '0_markers' / itrial.stem}.trc"
                 )
-                #todo: fix to_trc within pyosim
+
                 filename = Path(trc_filename)
-                # Make sure the directory exists, otherwise create it
-                if not filename.parents[0].is_dir():
-                    filename.parents[0].mkdir()
+                markers.to_trc(filename=trc_filename)
 
-                # Make sure the metadata are set
-                if 'rate' not in markers.attrs:
-                    raise ValueError('get_rate is empty. Please fill with `your_variable.get_rate = 100.0` for example')
-                if 'units' not in markers.attrs:
-                    raise ValueError('get_unit is empty. Please fill with `your_variable.get_unit = "mm"` for example')
-                if len(markers.channel.data) == 0:
-                    raise ValueError(
-                        'get_labels is empty. Please fill with `your_variable.get_labels = ["M1", "M2"]` for example')
-
-                table = osim.TimeSeriesTableVec3()
-                rate = markers.attrs['rate']
-
-                # set metadata
-                table.setColumnLabels(markers.channel.data)
-                table.addTableMetaDataString('DataRate', str(rate))
-                table.addTableMetaDataString('Units', markers.attrs['units'])
-
-                time_vector = np.arange(start=0, stop=1 / rate * markers.shape[2], step=1 / rate)
-
-                for iframe in range(markers.shape[-1]):
-                    a = np.round(markers[:, :, iframe].data, decimals=4)
-                    row = osim.RowVectorVec3(
-                        [osim.Vec3(a[0, i], a[1, i], a[2, i]) for i in range(a.shape[-1])]
-                    )
-                    table.appendRow(time_vector[iframe], row)
-
-                adapter = osim.TRCFileAdapter()
-                adapter.write(table, str(filename))
+                # # Make sure the directory exists, otherwise create it
+                # if not filename.parents[0].is_dir():
+                #     filename.parents[0].mkdir()
+                #
+                # # Make sure the metadata are set
+                # if 'rate' not in markers.attrs:
+                #     raise ValueError('get_rate is empty. Please fill with `your_variable.get_rate = 100.0` for example')
+                # if 'units' not in markers.attrs:
+                #     raise ValueError('get_unit is empty. Please fill with `your_variable.get_unit = "mm"` for example')
+                # if len(markers.channel.data) == 0:
+                #     raise ValueError(
+                #         'get_labels is empty. Please fill with `your_variable.get_labels = ["M1", "M2"]` for example')
+                #
+                # table = osim.TimeSeriesTableVec3()
+                # rate = markers.attrs['rate']
+                #
+                # # set metadata
+                # table.setColumnLabels(markers.channel.data)
+                # table.addTableMetaDataString('DataRate', str(rate))
+                # table.addTableMetaDataString('Units', markers.attrs['units'])
+                #
+                # time_vector = np.arange(start=0, stop=1 / rate * markers.shape[2], step=1 / rate)
+                #
+                # for iframe in range(markers.shape[-1]):
+                #     a = np.round(markers[:, :, iframe].data, decimals=4)
+                #     row = osim.RowVectorVec3(
+                #         [osim.Vec3(a[0, i], a[1, i], a[2, i]) for i in range(a.shape[-1])]
+                #     )
+                #     table.appendRow(time_vector[iframe], row)
+                #
+                # adapter = osim.TRCFileAdapter()
+                # adapter.write(table, str(filename))
                 # markers.to_trc(filename=trc_filename, reset_time=False)

@@ -1,6 +1,3 @@
-from pathlib import Path
-import os
-
 from pyosim import Conf
 from pyosim import Scale
 
