@@ -1,6 +1,6 @@
 from pyosim import Conf
 from pyosim import Scale
-
+import re
 import opensim as osim
 import numpy as np
 from project_paths import *
@@ -75,7 +75,7 @@ conf.check_confs()
 
 participants = conf.get_participants_to_process()
 
-for iparticipant in participants[:]:
+for iparticipant in participants[-1:]:
     print(f"\nparticipant: {iparticipant}")
 
     mass = conf.get_conf_field(iparticipant, ["mass"])
@@ -85,12 +85,13 @@ for iparticipant in participants[:]:
     mass *= MASS_FACTOR
     static_files = [ifile.stem for ifile in (PROJECT_PATH / iparticipant / "0_markers").glob("*.trc") if 'static' in ifile.stem and 'hip' not in ifile.stem]
     for istatic in static_files:
+        static_id = re.findall(r"\d+", istatic)[0]
         path_kwargs = {
             "model_input": f"{MODELS_PATH / model}_{laterality}.osim",
-            "model_output": f"{PROJECT_PATH / iparticipant / '_models' / model}_scaled_{istatic[-1]}.osim",
+            "model_output": f"{PROJECT_PATH / iparticipant / '_models' / model}_scaled_{static_id}.osim",
             "xml_input": f"{TEMPLATES_PATH / model}_scaling_{laterality}.xml",
             "model_name": f"{iparticipant}",
-            "xml_output": f"{PROJECT_PATH / iparticipant / '_xml' / model}_scaled_{istatic[-1]}.xml",
+            "xml_output": f"{PROJECT_PATH / iparticipant / '_xml' / model}_scaled_{static_id}.xml",
             "static_path": f"{PROJECT_PATH / iparticipant / '0_markers' / istatic}.trc",
             "add_model": [],
         }
@@ -110,5 +111,8 @@ for iparticipant in participants[:]:
             path_kwargs["xml_input"] = f"{TEMPLATES_PATH / model}_scaling_{laterality}_hip.xml"
             add_marker_to_trc(trc_data, path_kwargs['static_path'], hip)
 
-
-        Scale(mass=mass, **path_kwargs, remove_unused=False)
+        if static_id == '1':
+            Scale(mass=mass, **path_kwargs, remove_unused=False)
+        elif static_id == '2':
+            path_kwargs["model_input"] = f"{PROJECT_PATH / iparticipant / '_models' / model}_scaled_1.osim"
+            Scale(mass=mass, **path_kwargs, remove_unused=False, model_scaling=False)

@@ -1,6 +1,3 @@
-from pathlib import Path
-import os
-
 from pyosim import Conf
 from pyosim import InverseKinematics
 from project_paths import *
@@ -12,7 +9,7 @@ conf.check_confs()
 
 participants = conf.get_participants_to_process()
 
-for iparticipant in participants[:]:
+for iparticipant in participants[-1:]:
     print(f"\nparticipant: {iparticipant}")
 
     models = [
@@ -38,5 +35,7 @@ for iparticipant in participants[:]:
             onsets=[],
             prefix="",
             multi=False,
+            report_errors=True,
+            report_marker_location=True
         )
 
