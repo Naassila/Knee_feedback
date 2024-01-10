@@ -1,8 +1,19 @@
 from pathlib import Path
+import socket
 
-PROJECT_PATH = Path("D:/Knee_Flexion_auditory_tactile_feedback/Analysis/results")
-RAW_PATH = Path("D:/Knee_Flexion_auditory_tactile_feedback/Raw_data/Young")
-CONF_TEMPLATE = Path("D:/Knee_Flexion_auditory_tactile_feedback/Raw_data/_conf.csv")
+station = socket.gethostname()
+if station == 'Laptop_naas':
+    PROJECT_PATH = Path("'C:\\Users\\Nassila\\Documents\\Projects\\Knee_Flexion_auditory_tactile_feedback/Analysis/results")
+    RAW_PATH = Path("'C:\\Users\\Nassila\\Documents\\Projects\\Knee_Flexion_auditory_tactile_feedback/Raw_data/Young")
+    CONF_TEMPLATE = Path("'C:\\Users\\Nassila\\Documents\\Projects\\Knee_Flexion_auditory_tactile_feedback/Raw_data/_conf.csv")
+elif station == 'w10lloppici':
+    PROJECT_PATH = Path("D:/Knee_Flexion_auditory_tactile_feedback/Analysis/results")
+    RAW_PATH = Path("D:/Knee_Flexion_auditory_tactile_feedback/Raw_data/Young")
+    CONF_TEMPLATE = Path("D:/Knee_Flexion_auditory_tactile_feedback/Raw_data/_conf.csv")
+else:
+    raise ValueError('No idea where the raw data is')
+
+
 TEMPLATES_PATH = PROJECT_PATH / "_templates"
 MODELS_PATH = PROJECT_PATH / "_models"
 
