@@ -25,27 +25,40 @@ conf.check_confs()
 
 participants = conf.get_participants_to_process()
 d = {}
-for iparticipant in participants:
-    pseudo_in_path = (
-        iparticipant[0].upper() + iparticipant[1:-1] + iparticipant[-1].upper()
-    )
+for iparticipant in participants[:]:
+    if iparticipant not in ['03maig', '35aner', '37tach', '40svnn']:
+        continue
+    pseudo_in_path = iparticipant
 
     trials = (
-        f"{RAW_PATH}/{iparticipant}"
+        f"{RAW_PATH}\\{iparticipant}\\Labeled"
     )
 
     d.update(
         {
             iparticipant: {
                 "markers": {"data": [trials]},
+                "emg": {"data": [trials]}
             }
         }
     )
 conf.add_conf_field(d)
 
-# assign channel fields to targets fields
-for ikind, itarget in targets.items():
-    for iparticipant in participants:
+
+
+for iparticipant in participants[1:38]:
+    if conf.get_conf_field(iparticipant, field=['leg'])=='L':
+        leg_drop = "markers_R"
+        leg_keep = "markers_L"
+    else:
+        leg_drop = "markers_L"
+        leg_keep = "markers_R"
+
+    par_target = dict(targets)
+    del par_target[leg_drop]
+    par_target['markers']=par_target.pop(leg_keep)
+
+    for ikind, itarget in par_target.items():
         print(f"\t{iparticipant} - {ikind}")
         if "assigned" not in conf.get_conf_field(iparticipant, [ikind]):
             if change_marker_names:
